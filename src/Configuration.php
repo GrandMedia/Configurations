@@ -4,7 +4,7 @@ namespace GrandMedia\Configurations;
 
 use Assert\Assertion;
 
-final class Configuration
+class Configuration
 {
 
 	/**
