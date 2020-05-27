@@ -4,7 +4,6 @@
 				  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
 				  http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
 	<entity name="GrandMedia\Configurations\Configuration">
-		<id name="module" length="32"/>
 		<id name="name" length="32"/>
 		<field name="data" type="text"/>
 	</entity>

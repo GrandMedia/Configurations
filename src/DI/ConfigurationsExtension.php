@@ -4,7 +4,7 @@ namespace GrandMedia\Configurations\DI;
 
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
-use GrandMedia\Configurations\ConfigurationsManagerFactory;
+use GrandMedia\Configurations\ConfigurationsManager;
 use GrandMedia\Configurations\JMS\SerializerFactory;
 use JMS\Serializer\SerializerInterface;
 use Nette\DI\Definitions\Statement;
@@ -31,8 +31,8 @@ final class ConfigurationsExtension extends \Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$builder->addFactoryDefinition($this->prefix('managerFactory'))
-			->setImplement(ConfigurationsManagerFactory::class);
+		$builder->addDefinition($this->prefix('manager'))
+			->setType(ConfigurationsManager::class);
 
 		$builder->addDefinition($this->prefix('serializer'))
 			->setType(SerializerInterface::class)

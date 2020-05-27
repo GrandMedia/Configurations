@@ -11,13 +11,11 @@ final class ConfigurationsManager
 
 	private const SERIALIZER_FORMAT = 'json';
 
-	private string $module;
 	private EntityManagerInterface $em;
 	private SerializerInterface $serializer;
 
-	public function __construct(string $module, EntityManagerInterface $em, SerializerInterface $serializer)
+	public function __construct(EntityManagerInterface $em, SerializerInterface $serializer)
 	{
-		$this->module = $module;
 		$this->em = $em;
 		$this->serializer = $serializer;
 	}
@@ -32,7 +30,7 @@ final class ConfigurationsManager
 
 		$configuration = $this->find($name);
 		if ($configuration === null) {
-			$this->em->persist(Configuration::fromValues($this->module, $name, $stringData));
+			$this->em->persist(Configuration::fromValues($name, $stringData));
 		} else {
 			$configuration->changeData($stringData);
 		}
@@ -55,7 +53,7 @@ final class ConfigurationsManager
 	{
 		$configuration = $this->find($name);
 		if ($configuration === null) {
-			throw ConfigurationNotFound::from($this->module, $name);
+			throw ConfigurationNotFound::from($name);
 		}
 
 		return $this->serializer->deserialize($configuration->getData(), $type, self::SERIALIZER_FORMAT);
@@ -63,13 +61,7 @@ final class ConfigurationsManager
 
 	private function find(string $name): ?Configuration
 	{
-		return $this->em->find(
-			Configuration::class,
-			[
-				'module' => $this->module,
-				'name' => $name,
-			]
-		);
+		return $this->em->find(Configuration::class, $name);
 	}
 
 }
