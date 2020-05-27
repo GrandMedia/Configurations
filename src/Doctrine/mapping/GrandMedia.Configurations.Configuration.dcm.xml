@@ -6,6 +6,6 @@
 	<entity name="GrandMedia\Configurations\Configuration">
 		<id name="module" length="32"/>
 		<id name="name" length="32"/>
-		<field name="data" type="json"/>
+		<field name="data" type="text"/>
 	</entity>
 </doctrine-mapping>

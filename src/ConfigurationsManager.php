@@ -4,27 +4,18 @@ namespace GrandMedia\Configurations;
 
 use Doctrine\ORM\EntityManagerInterface;
 use GrandMedia\Configurations\Exceptions\ConfigurationNotFound;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 
 final class ConfigurationsManager
 {
 
-	/**
-	 * @var string
-	 */
-	private $module;
+	private const SERIALIZER_FORMAT = 'json';
 
-	/**
-	 * @var \Doctrine\ORM\EntityManagerInterface
-	 */
-	private $em;
+	private string $module;
+	private EntityManagerInterface $em;
+	private SerializerInterface $serializer;
 
-	/**
-	 * @var \JMS\Serializer\Serializer
-	 */
-	private $serializer;
-
-	public function __construct(string $module, EntityManagerInterface $em, Serializer $serializer)
+	public function __construct(string $module, EntityManagerInterface $em, SerializerInterface $serializer)
 	{
 		$this->module = $module;
 		$this->em = $em;
@@ -37,45 +28,48 @@ final class ConfigurationsManager
 	 */
 	public function save(string $name, $data): void
 	{
-		$arrayData = $this->serializer->toArray($data);
+		$stringData = $this->serializer->serialize($data, self::SERIALIZER_FORMAT);
 
 		$configuration = $this->find($name);
 		if ($configuration === null) {
-			$this->em->persist(Configuration::fromValues($this->module, $name, $arrayData));
+			$this->em->persist(Configuration::fromValues($this->module, $name, $stringData));
 		} else {
-			$configuration->changeData($arrayData);
+			$configuration->changeData($stringData);
 		}
 
 		$this->em->transactional(
-			function (): void {
+			static function (): void {
 			}
 		);
 	}
 
 	/**
 	 * @return mixed
+	 * @template T
+	 * @psalm-param class-string<T> $type
+	 * @psalm-return T
+	 *
 	 * @throws \GrandMedia\Configurations\Exceptions\ConfigurationNotFound
 	 */
-	public function get(string $name, string $dataClass)
+	public function get(string $name, string $type)
 	{
 		$configuration = $this->find($name);
 		if ($configuration === null) {
 			throw ConfigurationNotFound::from($this->module, $name);
 		}
 
-		return $this->serializer->fromArray($configuration->getData(), $dataClass);
+		return $this->serializer->deserialize($configuration->getData(), $type, self::SERIALIZER_FORMAT);
 	}
 
 	private function find(string $name): ?Configuration
 	{
-		$configuration = $this->em->getRepository(Configuration::class)->findOneBy(
+		return $this->em->find(
+			Configuration::class,
 			[
 				'module' => $this->module,
 				'name' => $name,
 			]
 		);
-
-		return $configuration instanceof Configuration ? $configuration : null;
 	}
 
 }

@@ -7,32 +7,21 @@ use Assert\Assertion;
 class Configuration
 {
 
-	/**
-	 * @var string
-	 */
-	private $module;
+	public const MAX_MODULE_LENGTH = 32;
+	public const MAX_NAME_LENGTH = 32;
 
-	/**
-	 * @var string
-	 */
-	private $name;
-
-	/**
-	 * @var mixed[]
-	 */
-	private $data;
+	private string $module;
+	private string $name;
+	private string $data;
 
 	private function __construct()
 	{
 	}
 
-	/**
-	 * @param mixed[] $data
-	 */
-	public static function fromValues(string $module, string $name, array $data): self
+	public static function fromValues(string $module, string $name, string $data): self
 	{
-		Assertion::maxLength($module, 32);
-		Assertion::maxLength($name, 32);
+		Assertion::maxLength($module, self::MAX_MODULE_LENGTH);
+		Assertion::maxLength($name, self::MAX_NAME_LENGTH);
 
 		$configuration = new self();
 		$configuration->module = $module;
@@ -42,10 +31,7 @@ class Configuration
 		return $configuration;
 	}
 
-	/**
-	 * @param mixed[] $data
-	 */
-	public function changeData(array $data): void
+	public function changeData(string $data): void
 	{
 		$this->data = $data;
 	}
@@ -60,10 +46,7 @@ class Configuration
 		return $this->name;
 	}
 
-	/**
-	 * @return mixed[]
-	 */
-	public function getData(): array
+	public function getData(): string
 	{
 		return $this->data;
 	}

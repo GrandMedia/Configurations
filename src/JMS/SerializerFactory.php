@@ -4,8 +4,8 @@ namespace GrandMedia\Configurations\JMS;
 
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 
 final class SerializerFactory
 {
@@ -13,7 +13,7 @@ final class SerializerFactory
 	/**
 	 * @param string[] $metadataDirs
 	 */
-	public static function create(string $cacheDir, array $metadataDirs): Serializer
+	public static function create(string $cacheDir, array $metadataDirs): SerializerInterface
 	{
 		return SerializerBuilder::create()
 			->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy())

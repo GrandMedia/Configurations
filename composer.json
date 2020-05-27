@@ -13,15 +13,16 @@
 		"issues": "https://github.com/GrandMedia/Configurations/issues"
 	},
 	"require": {
-		"php": ">=7.1",
-		"beberlei/assert": "^3.0",
-		"doctrine/orm": "^2.6",
-		"nette/di": "^2.4",
-		"jms/serializer": "^1.13"
+		"php": ">=7.4",
+		"beberlei/assert": "^3.2",
+		"jms/serializer": "^3.7",
+		"nette/di": "^3.0",
+		"nettrine/orm": "^0.6"
 	},
 	"require-dev": {
-		"grand-media/coding-standard": "^2.0",
-		"nette/tester": "~1.7"
+		"grand-media/coding-standard": "^3.0",
+		"nette/tester": "^2.3",
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"psr-4": {

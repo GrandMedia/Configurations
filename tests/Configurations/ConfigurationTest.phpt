@@ -15,7 +15,7 @@ final class ConfigurationTest extends \Tester\TestCase
 
 	public function testFromValues(): void
 	{
-		Configuration::fromValues('module', 'name', ['value']);
+		Configuration::fromValues('module', 'name', 'value');
 
 		Assert::true(true);
 	}
