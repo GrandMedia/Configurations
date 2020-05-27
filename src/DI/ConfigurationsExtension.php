@@ -8,6 +8,7 @@ use GrandMedia\Configurations\ConfigurationsManager;
 use GrandMedia\Configurations\JMS\SerializerFactory;
 use JMS\Serializer\SerializerInterface;
 use Nette\DI\Definitions\Statement;
+use Nette\DI\Helpers;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
@@ -34,11 +35,16 @@ final class ConfigurationsExtension extends \Nette\DI\CompilerExtension
 		$builder->addDefinition($this->prefix('manager'))
 			->setType(ConfigurationsManager::class);
 
+		$cacheDir = Helpers::expand($this->config->cacheDir . '/JMS', $builder->parameters);
+		$metadataDirs = \array_map(
+			fn(string $path): string => Helpers::expand($path, $builder->parameters),
+			$this->config->metadataDirs
+		);
 		$builder->addDefinition($this->prefix('serializer'))
 			->setType(SerializerInterface::class)
 			->setFactory(
 				SerializerFactory::class . '::create',
-				[$this->config->cacheDir . '/JMS', $this->config->metadataDirs]
+				[$cacheDir, $metadataDirs]
 			);
 	}
 
