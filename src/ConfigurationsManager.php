@@ -61,7 +61,9 @@ final class ConfigurationsManager
 
 	private function find(string $name): ?Configuration
 	{
-		return $this->em->find(Configuration::class, $name);
+		$configuration = $this->em->find(Configuration::class, $name);
+
+		return $configuration instanceof Configuration ? $configuration : null;
 	}
 
 }

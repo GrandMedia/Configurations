@@ -2,15 +2,13 @@
 
 namespace GrandMedia\Configurations\DI;
 
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use GrandMedia\Configurations\ConfigurationsManager;
 use GrandMedia\Configurations\JMS\SerializerFactory;
 use JMS\Serializer\SerializerInterface;
-use Nette\DI\Definitions\Statement;
 use Nette\DI\Helpers;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
+use Nettrine\ORM\DI\Helpers\MappingHelper;
 
 /**
  * @property-read \stdClass $config
@@ -50,23 +48,8 @@ final class ConfigurationsExtension extends \Nette\DI\CompilerExtension
 
 	public function beforeCompile(): void
 	{
-		$builder = $this->getContainerBuilder();
-
-		$xmlDriverName = $builder->getByType(XmlDriver::class);
-		if ($xmlDriverName === null) {
-			return;
-		}
-
-		/** @var \Nette\DI\Definitions\ServiceDefinition $xmlDriver */
-		$xmlDriver = $builder->getDefinition($xmlDriverName);
-
-		$xmlDriver->addSetup(
-			new Statement('$service->getLocator()->addPaths([?])', [__DIR__ . '/../Doctrine/mapping'])
-		);
-
-		/** @var \Nette\DI\Definitions\ServiceDefinition $chainDriver */
-		$chainDriver = $builder->getDefinitionByType(MappingDriverChain::class);
-		$chainDriver->addSetup('addDriver', [$xmlDriver, 'GrandMedia\Configurations']);
+		MappingHelper::of($this)
+			->addXml('GrandMedia\Configurations', __DIR__ . '/../Doctrine/mapping', true);
 	}
 
 }
